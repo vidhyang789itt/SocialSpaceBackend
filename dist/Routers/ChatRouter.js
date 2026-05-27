@@ -1,0 +1,23 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const chatController_1 = require("../Controllers/chatController");
+const PostsFileUploadMiddleware_1 = require("../Middlewares/PostsFileUploadMiddleware");
+const router = express_1.default.Router();
+router.post("/conversation", chatController_1.createConversation);
+router.get("/conversations", chatController_1.getUserConversations);
+router.get("/messages/:conversationId", chatController_1.getMessages);
+router.get("/unread-count", chatController_1.getUnreadCount);
+router.post("/group", PostsFileUploadMiddleware_1.upload.single("groupImage"), chatController_1.createGroupChat);
+router.post("/group/:groupId/members", chatController_1.addGroupMember);
+router.delete("/group/:groupId/members/:userId", chatController_1.removeGroupMember);
+router.delete("/group/:groupId/leave", chatController_1.leaveGroup);
+router.put("/group/:groupId", chatController_1.updateGroupInfo);
+router.put("/group/:groupId/image", PostsFileUploadMiddleware_1.upload.single("groupImage"), chatController_1.updateGroupImage);
+router.delete("/group/:groupId", chatController_1.deleteGroup);
+router.delete("/message/:messageId/delete-for-me", chatController_1.deleteMessageForMe);
+router.delete("/message/:messageId/delete-for-all", chatController_1.deleteMessageForAll);
+exports.default = router;

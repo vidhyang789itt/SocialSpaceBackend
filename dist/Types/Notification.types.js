@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.NotificationType = void 0;
+var NotificationType;
+(function (NotificationType) {
+    NotificationType["LIKE"] = "LIKE";
+    NotificationType["COMMENT"] = "COMMENT";
+    NotificationType["POST"] = "POST";
+    NotificationType["FOLLOW"] = "FOLLOW";
+})(NotificationType || (exports.NotificationType = NotificationType = {}));
