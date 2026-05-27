@@ -3,7 +3,7 @@
   "scripts": {
     "dev": "nodemon --watch src --exec ts-node ./index.ts",
     "build": "tsc",
-    "start": "nodemon ./index.ts"
+    "start": "node ./dist/index.js"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.11.2",
