@@ -33,14 +33,12 @@ app.use(cors());
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
-// Attach io and online users to each request for convenience
 app.use((req: CustomRequest, res, next) => {
   req.io = io;
   req.onlineUsers = userSocketMap;
   next();
 });
 
-// Connect to MongoDB
 connectDB(process.env.MONGO_URI)
   .then(() => {
     console.log("✅ Connected to MongoDB");
@@ -49,16 +47,12 @@ connectDB(process.env.MONGO_URI)
     console.error("❌ MongoDB Connection Error:", err);
   });
 
-// Test route
 app.get("/chat-test", (req, res) => {
   res.render("chat");
 });
 
-// Static file serving
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/api/uploads", express.static(path.join(__dirname, "../uploads")));
-
-// API routes
 app.use("/api", authRoute);
 app.use("/api/profile", restrictToLoginUserOnly, userRoute);
 app.use("/api/connect", restrictToLoginUserOnly, ConnectRouter);
@@ -74,3 +68,5 @@ app.use(errorHandler);
 httpServer.listen(PORT, "0.0.0.0", () => {
   console.log(`✅ Server is running on port ${PORT}`);
 });
+
+export default app;
