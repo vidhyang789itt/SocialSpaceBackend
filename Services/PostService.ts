@@ -1,7 +1,6 @@
 import Post from "../Models/Posts";
 import User from "../Models/Users";
-import fs from "fs";
-import path from "path";
+import { v2 as cloudinary } from "cloudinary";
 import { v4 as uuidv4 } from "uuid";
 
 interface MediaFile {
@@ -31,7 +30,7 @@ async function createPost(
       const fileType = file.mimetype.startsWith("image/") ? "image" : "video";
       media.push({
         type: fileType,
-        url: `../uploads/${file.filename}`,
+        url: file.path,
         filename: file.filename,
       });
     }
@@ -85,8 +84,8 @@ async function getAllPosts(
 
 async function updatePost(
   postId: string,
-  updates: { 
-    title?: string; 
+  updates: {
+    title?: string;
     content?: string;
   },
 ) {
@@ -117,10 +116,9 @@ async function deletePost(postId: string) {
   if (post.media && post.media.length > 0) {
     for (const media of post.media) {
       try {
-        const fullPath = path.join(__dirname, media.url);
-        await fs.promises.unlink(fullPath);
+        await cloudinary.uploader.destroy(media.filename, { resource_type: media.type });
       } catch (err) {
-        console.error(`Failed to delete media file: ${media.filename}`, err);
+        console.error(`Failed to delete media file from cloudinary: ${media.filename}`, err);
       }
     }
   }
@@ -163,10 +161,9 @@ async function updatePostMedia(
       if (mediaIndex !== -1) {
         const mediaItem = post.media[mediaIndex];
         try {
-          const fullPath = path.join(__dirname, mediaItem.url);
-          await fs.promises.unlink(fullPath);
+          await cloudinary.uploader.destroy(mediaItem.filename, { resource_type: mediaItem.type });
         } catch (err) {
-          console.error(`Failed to delete media file: ${mediaItem.filename}`, err);
+          console.error(`Failed to delete media file from cloudinary: ${mediaItem.filename}`, err);
         }
         post.media.splice(mediaIndex, 1);
       }
@@ -178,7 +175,7 @@ async function updatePostMedia(
       const fileType = file.mimetype.startsWith("image/") ? "image" : "video";
       post.media.push({
         type: fileType,
-        url: `../uploads/${file.filename}`,
+        url: file.path,
         filename: file.filename,
       } as any);
     }

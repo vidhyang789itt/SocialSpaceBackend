@@ -11,7 +11,7 @@ interface RouteParams {
   id?: string;
   userId?: string;
   groupId?: string;
-  conversationId? : string;
+  conversationId?: string;
   postId?: string;
   commentId?: string;
   type?: "followers" | "following";

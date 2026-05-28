@@ -7,15 +7,15 @@ export const uploadFile = async (
 ) => {
   try {
     if (!req.file) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        message: "No file uploaded" 
+        message: "No file uploaded"
       });
     }
 
     const file = req.file;
-    
-    const fileUrl = `/uploads/${file.filename}`;
+
+    const fileUrl = file.path;
 
     res.json({
       success: true,
@@ -27,10 +27,10 @@ export const uploadFile = async (
     });
   } catch (error: any) {
     console.error("Upload error:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
       message: "File upload failed",
-      error: error.message 
+      error: error.message
     });
   }
 };
@@ -41,17 +41,17 @@ export const uploadMultipleFiles = async (
 ) => {
   try {
     if (!req.files || (Array.isArray(req.files) && req.files.length === 0)) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        message: "No files uploaded" 
+        message: "No files uploaded"
       });
     }
 
     const files = Array.isArray(req.files) ? req.files : [req.files];
 
     const uploadedFiles = files.map((file: any) => ({
-      url: `/uploads/${file.filename}`,
-      filePath: `/uploads/${file.filename}`,
+      url: file.path,
+      filePath: file.path,
       fileName: file.originalname,
       fileSize: file.size,
       mimetype: file.mimetype,
@@ -63,10 +63,10 @@ export const uploadMultipleFiles = async (
     });
   } catch (error: any) {
     console.error("Upload error:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
       message: "File upload failed",
-      error: error.message 
+      error: error.message
     });
   }
 };

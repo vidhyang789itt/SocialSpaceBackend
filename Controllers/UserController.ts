@@ -130,7 +130,7 @@ async function addProfileImage(
       return next(error);
     }
 
-    const imagePath = `../uploads/${req.file.filename}`;
+    const imagePath = req.file.path;
 
     const user = await userService.updateProfilePhoto(req.user.userId, imagePath);
 
