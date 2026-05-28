@@ -72,52 +72,52 @@ export const getUnreadCount = async (req: CustomRequest, res: Response, next: Ne
 };
 
 export const createGroupChat = async (
-  req: CustomRequest,
-  res: Response,
-  next: NextFunction
+    req: CustomRequest,
+    res: Response,
+    next: NextFunction
 ) => {
-  try {
-    if (!req.user) throw new Error("Unauthorized");
+    try {
+        if (!req.user) throw new Error("Unauthorized");
 
-    let { groupName, memberIds } = req.body;
-    memberIds = JSON.parse(memberIds);
-    
-    let groupImage;
+        let { groupName, memberIds } = req.body;
+        memberIds = JSON.parse(memberIds);
 
-    if(req.file) {
-        groupImage = `../uploads/${req.file.filename}`;
+        let groupImage;
+
+        if (req.file) {
+            groupImage = `../uploads/${req.file.filename}`;
+        }
+
+        const adminId = req.user.userId;
+
+        if (!groupName) {
+            return res
+                .status(400)
+                .json({ message: "Group name is required" });
+        }
+
+        if (!memberIds || memberIds.length === 0) {
+            return res
+                .status(400)
+                .json({ message: "At least one member is required" });
+        }
+
+        const memberIdsArray = Array.isArray(memberIds)
+            ? memberIds
+            : [memberIds];
+
+        const group = await chatService.createGroupChat(
+            groupName,
+            memberIdsArray,
+            groupImage,
+            adminId
+        );
+
+        res.json(group);
+    } catch (err) {
+        console.error("❌ Controller error:", err);
+        next(err);
     }
-
-    const adminId = req.user.userId;
-
-    if (!groupName) {
-      return res
-        .status(400)
-        .json({ message: "Group name is required" });
-    }
-
-    if (!memberIds || memberIds.length === 0) {
-      return res
-        .status(400)
-        .json({ message: "At least one member is required" });
-    }
-
-    const memberIdsArray = Array.isArray(memberIds)
-      ? memberIds
-      : [memberIds];
-
-    const group = await chatService.createGroupChat(
-      groupName,
-      memberIdsArray, 
-      groupImage,
-      adminId
-    );
-
-    res.json(group);
-  } catch (err) {
-    console.error("❌ Controller error:", err);
-    next(err);
-  }
 };
 
 export const addGroupMember = async (req: CustomRequest, res: Response, next: NextFunction) => {
@@ -206,62 +206,62 @@ export const updateGroupImage = async (req: CustomRequest, res: Response, next: 
 };
 
 export const deleteGroup = async (req: CustomRequest, res: Response, next: NextFunction) => {
-    try{    
-        const {groupId} = req.params;
+    try {
+        const { groupId } = req.params;
 
         if (!req.user) throw new Error("Unauthorized");
-        if (!groupId) throw new Error("give group id");   
-        
+        if (!groupId) throw new Error("give group id");
+
         const deleted = await chatService.deleteGroup(groupId, req.user.userId);
 
         res.json(deleted);
     }
-    catch(err){
+    catch (err) {
         next(err);
     }
 }
 
 export const deleteMessageForMe = async (
-  req: CustomRequest,
-  res: Response,
-  next: NextFunction
+    req: CustomRequest,
+    res: Response,
+    next: NextFunction
 ) => {
-  try {
-    const { messageId } = req.params;
+    try {
+        const { messageId } = req.params;
 
-    if (!req.user) throw new Error("Unauthorized");
-    if (!messageId) throw new Error("Message ID is required");
+        if (!req.user) throw new Error("Unauthorized");
+        if (!messageId) throw new Error("Message ID is required");
 
-    const message = await chatService.deleteMessageForMe(
-      messageId,
-      req.user.userId
-    );
-    
+        const message = await chatService.deleteMessageForMe(
+            messageId,
+            req.user.userId
+        );
 
-    res.json({ message, type: "deletedForMe" });
-  } catch (err) {
-    next(err);
-  }
+
+        res.json({ message, type: "deletedForMe" });
+    } catch (err) {
+        next(err);
+    }
 };
 
 export const deleteMessageForAll = async (
-  req: CustomRequest,
-  res: Response,
-  next: NextFunction
+    req: CustomRequest,
+    res: Response,
+    next: NextFunction
 ) => {
-  try {
-    const { messageId } = req.params;
+    try {
+        const { messageId } = req.params;
 
-    if (!req.user) throw new Error("Unauthorized");
-    if (!messageId) throw new Error("Message ID is required");
+        if (!req.user) throw new Error("Unauthorized");
+        if (!messageId) throw new Error("Message ID is required");
 
-    const message = await chatService.deleteMessageForAll(
-      messageId,
-      req.user.userId
-    );
+        const message = await chatService.deleteMessageForAll(
+            messageId,
+            req.user.userId
+        );
 
-    res.json({ message, type: "deletedForAll" });
-  } catch (err) {
-    next(err);
-  }
+        res.json({ message, type: "deletedForAll" });
+    } catch (err) {
+        next(err);
+    }
 };

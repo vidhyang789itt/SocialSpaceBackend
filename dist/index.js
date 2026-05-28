@@ -37,11 +37,11 @@ app.use((req, res, next) => {
 });
 (0, MongoDbConnection_1.default)(process.env.MONGO_URI)
     .then(() => {
-    console.log("✅ Connected to MongoDB");
-})
+        console.log("✅ Connected to MongoDB");
+    })
     .catch((err) => {
-    console.error("❌ MongoDB Connection Error:", err);
-});
+        console.error("❌ MongoDB Connection Error:", err);
+    });
 app.get("/chat-test", (req, res) => {
     res.render("chat");
 });

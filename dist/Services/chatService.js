@@ -573,12 +573,12 @@ const getMessages = async (conversationId, userId, page = 1, limit = 50) => {
         }
         const filteredMessages = messages
             .map((msg) => {
-            const isDeletedForUser = msg.deletedForMe?.some((item) => isIdEqual(item.userId, user._id));
-            if (isDeletedForUser) {
-                return null;
-            }
-            return msg;
-        })
+                const isDeletedForUser = msg.deletedForMe?.some((item) => isIdEqual(item.userId, user._id));
+                if (isDeletedForUser) {
+                    return null;
+                }
+                return msg;
+            })
             .filter((msg) => msg !== null);
         return {
             messages: filteredMessages,

@@ -38,7 +38,7 @@ export const registerSocketHandlers = (socket: Socket) => {
       );
 
       console.log(message);
-      
+
 
       const conversation = await chatService.getConversationById(
         conversationId
@@ -87,11 +87,11 @@ export const registerSocketHandlers = (socket: Socket) => {
             }
           }
         }
-      }else{
+      } else {
         if (receiverId) {
           const recipientSocketId = userSocketMap.get(receiverId);
           const senderSocketId = userSocketMap.get(senderId);
-          
+
           if (recipientSocketId && senderSocketId) {
             io.to(recipientSocketId).emit("receiveMessage", message);
             io.to(senderSocketId).emit("receiveMessage", message);
@@ -172,7 +172,7 @@ export const registerSocketHandlers = (socket: Socket) => {
             }
           }
         }
-      }else{
+      } else {
         if (senderId && senderId !== userId) {
           io.to(senderId).emit("messagesRead", {
             conversationId,
@@ -209,14 +209,14 @@ export const registerSocketHandlers = (socket: Socket) => {
   });
 
   socket.on("groupCreated", async (groupData: any) => {
-    try{
+    try {
       const group = await chatService.getConversationById(groupData.groupId);
 
-      if(!group){
+      if (!group) {
         return null;
       }
 
-      if(group.groupMembers){
+      if (group.groupMembers) {
         for (const member of group.groupMembers) {
           if (
             !member ||
@@ -234,7 +234,7 @@ export const registerSocketHandlers = (socket: Socket) => {
             continue;
           }
 
-          if(group.groupAdmin && memberId === group.groupAdmin._id.toString()){
+          if (group.groupAdmin && memberId === group.groupAdmin._id.toString()) {
             return null;
           }
 
@@ -242,7 +242,7 @@ export const registerSocketHandlers = (socket: Socket) => {
             if (memberId) {
               const recipientSocketId = userSocketMap.get(memberId);
               if (recipientSocketId) {
-                io.to(recipientSocketId).emit("newGroupCreated",group);
+                io.to(recipientSocketId).emit("newGroupCreated", group);
               }
             }
           } catch (error) {
@@ -254,7 +254,7 @@ export const registerSocketHandlers = (socket: Socket) => {
         }
       }
     }
-    catch(error){
+    catch (error) {
       console.error("❌ Socket creating group error:", error);
       socket.emit("error", {
         message: "Failed to send message",
@@ -371,11 +371,11 @@ export const registerSocketHandlers = (socket: Socket) => {
               }
             }
           }
-        }else{
-          if(conversation.user1?.userId && conversation.user2?.userId){
+        } else {
+          if (conversation.user1?.userId && conversation.user2?.userId) {
             const recipientSocketId = userSocketMap.get(conversation.user1?.userId);
             const senderSocketId = userSocketMap.get(conversation.user2?.userId);
-            
+
             if (recipientSocketId && senderSocketId) {
               io.to(recipientSocketId).emit("messageDeleted", {
                 messageId,
@@ -414,7 +414,7 @@ export const registerSocketHandlers = (socket: Socket) => {
 
   socket.on("user:call", ({ to, offer, conversationId, userName }) => {
     console.log(`📞 user:call received - from ${socket.id} to ${to}`);
-    
+
     const recipientSocketId = userSocketMap.get(to);
 
     if (!recipientSocketId) {
@@ -445,7 +445,7 @@ export const registerSocketHandlers = (socket: Socket) => {
 
   socket.on("call-answer", ({ to, answer }) => {
     console.log(`✅ call-answer received - from ${socket.id} to ${to}`);
-    
+
     io.to(to).emit("call-answer", {
       answer: answer,
       from: socket.id,
@@ -465,18 +465,18 @@ export const registerSocketHandlers = (socket: Socket) => {
 
   socket.on("call-reject", ({ to }) => {
     console.log(`❌ call-reject from ${socket.id} to ${to}`);
-    
+
     io.to(to).emit("call-rejected");
   });
 
   socket.on("call-ended", ({ to }) => {
     console.log(`📴 call-ended from ${socket.id} to ${to}`);
-    
+
     if (to) {
       io.to(to).emit("call-ended");
     }
   });
-  
+
   socket.on("call:initiate", async (data: any) => {
     try {
       const { to, from, fromEmail, fromUsername, conversationId, callType } = data;
@@ -557,7 +557,7 @@ export const registerSocketHandlers = (socket: Socket) => {
 
   socket.on("user-status-change", ({ to, type, state }) => {
     console.log(`📤 Status change - ${type}: ${state} to ${to}`);
-    
+
     io.to(to).emit("user-status-change", {
       type: type,
       state: state,

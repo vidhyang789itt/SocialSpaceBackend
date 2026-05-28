@@ -28,7 +28,7 @@ export interface PopulatedMessage {
   messageType: string;
   readBy?: any[];
   isRead?: boolean;
-  isDeletedForAll?: boolean; 
+  isDeletedForAll?: boolean;
   originalContent?: string;
   deletedForMe?: Array<{ userId: Types.ObjectId }>;
   createdAt: Date;
@@ -269,7 +269,7 @@ export const markAsRead = async (
 
     const conversation = await Conversations.findById(conversationId);
     const user = await User.findById(userId);
-    
+
 
     if (!conversation) throw new Error("Conversation not found");
     if (!user) throw new Error("User not found");
@@ -385,7 +385,7 @@ export const getUnreadChatCount = async (
     ]);
 
     const totalUnread = result?.[0]?.totalUnreadConversations || 0;
-    
+
 
     return {
       totalUnread,
@@ -411,10 +411,10 @@ export const createGroupChat = async (
     if (!admin) throw new Error("Admin user not found");
 
     let allMemberIds: string[] = [];
-    
+
     if (memberUserIds) {
-      allMemberIds = Array.isArray(memberUserIds) 
-        ? memberUserIds 
+      allMemberIds = Array.isArray(memberUserIds)
+        ? memberUserIds
         : [memberUserIds];
     }
 
@@ -423,13 +423,13 @@ export const createGroupChat = async (
     );
 
     const members = await User.find({ userId: { $in: uniqueMemberIds } });
-    
+
     if (members.length === 0) throw new Error("No valid members found");
 
     const groupMembersData = members.map((member) => ({
       userId: member._id,
-      role: isIdEqual(member._id, admin._id) 
-        ? ("admin" as const) 
+      role: isIdEqual(member._id, admin._id)
+        ? ("admin" as const)
         : ("member" as const),
     }));
 
@@ -665,7 +665,7 @@ export const updateGroupImage = async (
     const oldImageUrl = conversation.groupImage;
     conversation.groupImage = imagePath;
 
-    
+
 
     if (oldImageUrl) {
       try {

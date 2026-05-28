@@ -91,7 +91,7 @@ const messageSchema = new mongoose.Schema(
         },
       },
     ],
-    
+
     replyTo: {
       messageId: {
         type: Schema.Types.ObjectId,

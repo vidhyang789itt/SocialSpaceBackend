@@ -11,7 +11,7 @@ async function registerUser(
   const userExists = await User.findOne({ email });
 
   console.log(username, email, password);
-  
+
 
   if (userExists) {
     const error: any = new Error("Email already in use");
