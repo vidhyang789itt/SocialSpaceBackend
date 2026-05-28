@@ -85,7 +85,7 @@ export const createGroupChat = async (
     let groupImage;
 
     if (req.file) {
-      groupImage = `../uploads/${req.file.filename}`;
+      groupImage = req.file.path;
     }
 
     const adminId = req.user.userId;
